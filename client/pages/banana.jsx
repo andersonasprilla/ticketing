@@ -2,9 +2,9 @@ import React from 'react'
 
 const banana = () => {
   return (
-    <div>
+    <h1>
       BANANA4
-    </div>
+    </h1>
   )
 }
 
