@@ -1,41 +1,25 @@
 import { useState } from "react";
-import axios from "axios";
+import useRequest from "../../hooks/use-request";
 
 const signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
+  const { doRequest, errors } = useRequest({
+    url: '/api/users/signup',
+    method: 'post',
+    body: { email, password },
+    onSuccess: () => Router.push('/')
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/api/users/signup", {
-        email,
-        password,
-      });
-      console.log(response.data);
-    } catch (err) {
-      // Extract error messages properly
-      const errorMessages = err.response?.data?.errors?.map(
-        (error) => error.message || error
-      ) || ["An unexpected error occurred"];
-      setErrors(errorMessages);
-    }
+    await doRequest();
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h1>Sign Up</h1>
-      {errors.length > 0 && (
-        <div className='alert alert-danger'>
-          <h4>Ooops....</h4>
-          <ul className='my-0'>
-            {errors.map((err, index) => (
-              <li key={index}>{err}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {errors}
       <div className='form-group'>
         <label htmlFor='email'>Email</label>
         <input
